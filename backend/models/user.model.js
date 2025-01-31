@@ -5,14 +5,13 @@ import bcrypt from "bcrypt"
 
 const userSchema = mongoose.Schema({
     fullname:{
-        firstName:{
+        firstname:{
             type:String,
             required:true,
             min: [3, "First name must be at least 3 characters long"]
         },
-        lastName:{
+        lastname:{
             type:String,
-            required:true,
             min: [3, "Last name must be at least 3 characters long"]
         },
 
@@ -32,17 +31,17 @@ const userSchema = mongoose.Schema({
     }
 })
 
-userSchema.methods.generateAuthtoken = ()=>{
+userSchema.methods.generateAuthtoken = function(){
     const token = jwt.sign({_id: this._id}, process.env.JWT_SECRET_KEY)
     return token
 }
 
-userSchema.methods.comparePassword = async(password)=>{
+userSchema.methods.comparePassword = async function(password){
     return await bcrypt.compare(password,this.password)
 }
 
-userSchema.statics.hashPassword = async(password)=>{
-    return await bcrypt.hashPassword(password,10)
+userSchema.statics.hashPassword = async function (password){
+    return await bcrypt.hash(password,10)
 }
 
 export const UserModel = mongoose.model("User", userSchema)
