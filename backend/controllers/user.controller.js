@@ -16,7 +16,6 @@ export const registerUser = async(req,res, next)=>{
     const user = await createUser({ firstname: fullname.firstname, lastname: fullname.lastname, email, password: hashedPassword})
 
     const token = user.generateAuthtoken()
-    console.log(token)
 
     res.status(201).json({token,user})
 }catch(err){
