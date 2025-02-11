@@ -22,7 +22,7 @@ export const registerUser = async(req,res, next)=>{
     const user = await createUser({ firstname: fullname.firstname, lastname: fullname.lastname, email, password: hashedPassword})
 
     const token = user.generateAuthtoken()
-
+    res.cookie("token", token)
     res.status(201).json({token,user})
 }catch(err){
     res.status(500).json({
@@ -69,11 +69,9 @@ export const getUserProfile = async(req,res, next)=>{
 
 export const logoutUser = async(req, res, next)=>{
     try {
-        res.clearCookie("token")
         const token = req.cookies.token || req.headers.authorization.split(" ")[1]
-
         await BlacklistTokenModel.create({token})
-
+        res.clearCookie("token")
         res.status(200).json({message: "Logged out successfully"})
     } catch (error) {
         res.status(500).json({
